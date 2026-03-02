@@ -1,0 +1,230 @@
+.home-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Hero */
+.home-hero {
+    text-align: center;
+    padding: 48px 0 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.home-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-indigo);
+    letter-spacing: 0.03em;
+}
+
+.home-hero__title {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+}
+
+.home-hero__subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 480px;
+    line-height: 1.6;
+}
+
+/* Form card */
+.home-form-card {
+    padding: 24px;
+}
+
+.home-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.home-form__url-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.home-form__url-input-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.home-form__url-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+}
+
+.home-form__url-input {
+    padding-left: 42px;
+    height: 50px;
+    font-size: 15px;
+}
+
+.home-form__submit {
+    height: 50px;
+    padding: 0 24px;
+    font-size: 15px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Advanced toggle */
+.home-form__advanced-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color var(--transition-fast);
+    align-self: flex-start;
+}
+
+.home-form__advanced-toggle:hover {
+    color: var(--text-secondary);
+}
+
+/* Advanced options */
+.home-form__advanced {
+    border-top: 1px solid var(--color-border);
+    padding-top: 16px;
+}
+
+.home-form__advanced-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .home-form__advanced-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-form__url-row {
+        flex-direction: column;
+    }
+
+    .home-form__submit {
+        width: 100%;
+    }
+}
+
+.home-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.home-form__label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.home-form__optional {
+    font-weight: 400;
+    text-transform: none;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.home-form__prefix-input {
+    display: flex;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.home-form__prefix-input:focus-within {
+    border-color: var(--accent-indigo);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.home-form__prefix {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    background: var(--color-surface-2);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    border-right: 1px solid var(--color-border);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.home-form__prefix-input .input-field {
+    border: none;
+    border-radius: 0;
+    background: var(--color-surface);
+    box-shadow: none;
+}
+
+.home-form__prefix-input .input-field:focus {
+    box-shadow: none;
+}
+
+.home-form__hint {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Feature pills */
+.home-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding-bottom: 40px;
+}
+
+.home-feature-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+}
+
+.home-feature-pill:hover {
+    border-color: var(--color-border-hover);
+    color: var(--text-primary);
+}
