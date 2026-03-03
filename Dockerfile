@@ -53,17 +53,10 @@ RUN python manage.py collectstatic --noinput --settings=config.settings.producti
 
 USER appuser
 
-EXPOSE 8000
+EXPOSE ${PORT:-8000}
 
 # Gunicorn with sensible production defaults:
 #   - 4 workers (2 * CPU + 1 is common heuristic; override via ENV in K8s)
 #   - 120s timeout
 #   - Access log to stdout for container log aggregation
-CMD ["gunicorn", \
-    "--bind", "0.0.0.0:8000", \
-    "--workers", "4", \
-    "--worker-class", "sync", \
-    "--timeout", "120", \
-    "--access-logfile", "-", \
-    "--error-logfile", "-", \
-    "config.wsgi:application"]
+CMD gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 4 --worker-class sync --timeout 120 --access-logfile - --error-logfile - config.wsgi:application
