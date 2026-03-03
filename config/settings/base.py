@@ -88,15 +88,19 @@ ASGI_APPLICATION = "config.asgi.application"
 import dj_database_url  # noqa: E402
 
 DATABASES = {
-    "default": dj_database_url.config(
-        env="DATABASE_URL",
-        default="postgres://postgres:password@localhost:5432/url_shortener",
+    "default": dj_database_url.parse(
+        config(
+            "DATABASE_URL",
+            default="postgres://postgres:password@localhost:5432/url_shortener"
+        ),
         conn_max_age=600,
         conn_health_checks=True,
     ),
-    "replica": dj_database_url.config(
-        env="DATABASE_REPLICA_URL",
-        default="postgres://postgres:password@localhost:5432/url_shortener",
+    "replica": dj_database_url.parse(
+        config(
+            "DATABASE_REPLICA_URL",
+            default="postgres://postgres:password@localhost:5432/url_shortener"
+        ),
         conn_max_age=600,
         conn_health_checks=True,
     ),
@@ -109,7 +113,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ─────────────────────────────────────────────────
 # Redis / Cache
 # ─────────────────────────────────────────────────
-REDIS_URL = config("REDIS_URL", default="redis://localhost:6379/0")
+REDIS_URL = config("REDIS_URL", default="rediss://default:AYEzAAIncDIxYzEzMTY4NGNlN2I0M2ExOTQ2YWRlNjhhYjI1M2VlMHAyMzMwNzU@rational-toad-33075.upstash.io:6379")
 CACHE_TTL_SECONDS = config("CACHE_TTL_SECONDS", default=86400, cast=int)
 
 CACHES = {
@@ -129,7 +133,7 @@ CACHES = {
 # Kafka
 # ─────────────────────────────────────────────────
 KAFKA_BOOTSTRAP_SERVERS = config(
-    "KAFKA_BOOTSTRAP_SERVERS", default="localhost:9092"
+    "KAFKA_BOOTSTRAP_SERVERS", default="kafka:9092"
 )
 KAFKA_TOPIC_CLICK_EVENTS = config(
     "KAFKA_TOPIC_CLICK_EVENTS", default="url_click_events"
