@@ -7,7 +7,8 @@ This is the most performance-critical service. Every redirect goes through here.
 Strategy:
   1. Check Redis (sub-millisecond if hit).
   2. On miss → query Postgres → populate Redis → return.
-  3. Asynchronously publish a ClickEvent to Kafka.
+  3. Try to publish a ClickEvent to Kafka (async).
+  4. If Kafka is unavailable, fall back to writing the click directly to the DB.
 
 The Redis check and Kafka publish are both fail-safe: their errors
 DO NOT prevent the redirect from succeeding.
@@ -18,7 +19,7 @@ from datetime import datetime
 from django.utils import timezone
 
 from apps.url.domain.entities import ClickEvent
-from apps.url.domain.interfaces import IUrlRepository
+from apps.url.domain.interfaces import IClickEventRepository, IUrlRepository
 from apps.url.infrastructure.kafka_producer import KafkaEventProducer
 from apps.url.infrastructure.redis_client import RedisCache
 from shared.exceptions.exceptions import UrlExpiredError, UrlInactiveError, UrlNotFoundError
@@ -31,9 +32,10 @@ class UrlRedirectService:
     Handles the redirect flow with Cache-Aside pattern + Kafka event publishing.
 
     Injected dependencies:
-        - url_repository: IUrlRepository  (DB access)
-        - cache: RedisCache               (cache-aside)
-        - event_producer: KafkaEventProducer (async analytics)
+        - url_repository:   IUrlRepository        (DB access)
+        - cache:            RedisCache             (cache-aside)
+        - event_producer:   KafkaEventProducer    (async analytics via Kafka)
+        - click_repository: IClickEventRepository (direct DB fallback when Kafka is down)
     """
 
     def __init__(
@@ -41,10 +43,12 @@ class UrlRedirectService:
         url_repository: IUrlRepository,
         cache: RedisCache,
         event_producer: KafkaEventProducer,
+        click_repository: IClickEventRepository | None = None,
     ) -> None:
         self._repo = url_repository
         self._cache = cache
         self._event_producer = event_producer
+        self._click_repo = click_repository
 
     def redirect(
         self,
@@ -115,10 +119,14 @@ class UrlRedirectService:
         user_agent: str | None,
     ) -> None:
         """
-        Publish a click event to Kafka asynchronously.
+        Record a click event.
 
-        Completely fire-and-forget. Any error is logged and swallowed.
-        The redirect MUST NOT be blocked by analytics.
+        Primary path: publish to Kafka asynchronously (fire-and-forget).
+        Fallback path: if Kafka is unavailable and a click_repository was
+        injected, write the event directly to the database so analytics
+        are never silently dropped.
+
+        The redirect MUST NOT be blocked by analytics in either path.
         """
         event = ClickEvent(
             short_code=short_code,
@@ -126,7 +134,27 @@ class UrlRedirectService:
             ip_address=ip_address,
             user_agent=user_agent,
         )
-        self._event_producer.publish_click_event(event)
+
+        published = self._event_producer.publish_click_event(event)
+
+        # Fallback: Kafka unavailable → write directly to DB
+        if not published and self._click_repo is not None:
+            try:
+                self._click_repo.save(event)
+                logger.info(
+                    "Click event saved directly to DB (Kafka fallback): "
+                    "short_code=%s event_id=%s",
+                    short_code,
+                    event.event_id,
+                )
+            except Exception as exc:
+                logger.error(
+                    "Failed to save click event to DB fallback: "
+                    "short_code=%s event_id=%s error=%s",
+                    short_code,
+                    event.event_id,
+                    exc,
+                )
 
     def invalidate_cache(self, short_code: str) -> None:
         """
