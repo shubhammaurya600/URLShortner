@@ -113,7 +113,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ─────────────────────────────────────────────────
 # Redis / Cache
 # ─────────────────────────────────────────────────
-REDIS_URL = config("REDIS_URL", default="rediss://default:AYEzAAIncDIxYzEzMTY4NGNlN2I0M2ExOTQ2YWRlNjhhYjI1M2VlMHAyMzMwNzU@rational-toad-33075.upstash.io:6379")
+REDIS_URL = config("REDIS_URL", default="rediss://default:gQAAAAAAASFJAAIgcDJjOTJmY2VmYjVlM2E0MzhhYmNlYzE4ZmM1MjJlZWNlMw@chief-donkey-74057.upstash.io:6379")
 CACHE_TTL_SECONDS = config("CACHE_TTL_SECONDS", default=86400, cast=int)
 
 CACHES = {
