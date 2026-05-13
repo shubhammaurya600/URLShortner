@@ -33,7 +33,9 @@ from shared.utils.base62 import generate_short_code
 from shared.utils.validators import validate_custom_alias, validate_url
 
 logger = logging.getLogger(__name__)
-
+"""
+TODO: reuired to remove all the print statements because if there print statement the server load is going to increasse
+"""
 
 class UrlShortenerService:
     """

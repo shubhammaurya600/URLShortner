@@ -56,6 +56,7 @@ def _make_redirect_service() -> UrlRedirectService:
         url_repository=PostgresUrlRepository(),
         cache=RedisCache(),
         event_producer=KafkaEventProducer(),
+        click_repository=PostgresClickEventRepository(),  # DB fallback if Kafka is down
     )
 
 
@@ -92,6 +93,8 @@ class ShortenUrlView(APIView):
             "expires_at": null
         }
     """
+    print("ShortenUrlView")
+    print(APIView)
     throttle_classes = [ShortenRateThrottle]
 
     def post(self, request: Request) -> Response:

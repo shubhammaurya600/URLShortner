@@ -29,7 +29,7 @@ class RedisCache:
     """
 
     def __init__(self, redis_url: str | None = None, ttl: int | None = None) -> None:
-        url = redis_url or getattr(settings, "REDIS_URL", "redis://localhost:6379/0")
+        url = redis_url or getattr(settings, "REDIS_URL", "rediss://default:AYEzAAIncDIxYzEzMTY4NGNlN2I0M2ExOTQ2YWRlNjhhYjI1M2VlMHAyMzMwNzU@rational-toad-33075.upstash.io:6379")
         self._ttl = ttl or getattr(settings, "CACHE_TTL_SECONDS", DEFAULT_CACHE_TTL_SECONDS)
         try:
             self._client = redis.Redis.from_url(

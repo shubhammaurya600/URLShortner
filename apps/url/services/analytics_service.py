@@ -73,6 +73,10 @@ class AnalyticsService:
         recent_events = self._click_repo.get_recent_events(
             short_code, limit=recent_limit
         )
+        print("recent_events", recent_events)
+        print("total_clicks", total_clicks)
+        print("short_url", short_url)
+        print("short_code", short_code)
 
         logger.info(
             "Analytics fetched: short_code=%s total_clicks=%d",
